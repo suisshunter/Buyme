@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Texterstellung beauftragen</title>
+    <title>Verkäufer Registrierung und Suche</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,69 +20,148 @@
         main {
             margin: 2rem;
         }
-        form {
+        form, .search {
             background: white;
             padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
         }
-        form label {
+        form label, .search label {
             display: block;
             margin: 0.5rem 0 0.2rem;
             font-weight: bold;
         }
-        form input, form textarea, form select, form button {
+        form input, form textarea, form button, .search input, .search button {
             width: 100%;
             padding: 0.8rem;
             margin-bottom: 1rem;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        form button {
+        form button, .search button {
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
         }
-        form button:hover {
+        form button:hover, .search button:hover {
             background-color: #45a049;
+        }
+        .seller-list {
+            margin-top: 2rem;
+            list-style-type: none;
+            padding: 0;
+        }
+        .seller-list li {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Texterstellung beauftragen</h1>
+        <h1>Verkäufer Registrierung und Suche</h1>
     </header>
     <main>
-        <form id="order-form">
-            <label for="title">Titel des Textes</label>
-            <input type="text" id="title" name="title" placeholder="Titel eingeben" required>
+        <form id="register-form">
+            <h2>Als Verkäufer registrieren</h2>
 
-            <label for="category">Kategorie</label>
-            <select id="category" name="category" required>
-                <option value="">Bitte wählen...</option>
-                <option value="blog">Blogartikel</option>
-                <option value="marketing">Marketingtexte</option>
-                <option value="seo">SEO-Optimierte Texte</option>
-                <option value="andere">Andere</option>
-            </select>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Ihr Name" required>
 
-            <label for="word-count">Wortanzahl</label>
-            <input type="number" id="word-count" name="word-count" placeholder="Z. B. 500" required>
+            <label for="address">Adresse</label>
+            <input type="text" id="address" name="address" placeholder="Ihre Adresse" required>
 
-            <label for="details">Weitere Details</label>
-            <textarea id="details" name="details" placeholder="Beschreiben Sie Ihre Anforderungen" rows="5"></textarea>
+            <label for="phone">Telefonnummer</label>
+            <input type="text" id="phone" name="phone" placeholder="Ihre Telefonnummer" required>
 
-            <label for="email">Ihre E-Mail-Adresse</label>
-            <input type="email" id="email" name="email" placeholder="Ihre E-Mail-Adresse" required>
+            <label for="image">Bild hochladen</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
 
-            <button type="submit">Anfrage senden</button>
+            <label for="description">Beschreibung</label>
+            <textarea id="description" name="description" placeholder="Beschreibung Ihres Angebots" rows="4" required></textarea>
+
+            <label for="custom-field-1">Freitextfeld 1</label>
+            <input type="text" id="custom-field-1" name="custom-field-1" placeholder="Freitextfeld 1">
+
+            <label for="custom-field-2">Freitextfeld 2</label>
+            <input type="text" id="custom-field-2" name="custom-field-2" placeholder="Freitextfeld 2">
+
+            <label for="custom-field-3">Freitextfeld 3</label>
+            <input type="text" id="custom-field-3" name="custom-field-3" placeholder="Freitextfeld 3">
+
+            <button type="submit">Registrieren</button>
         </form>
+
+        <div class="search">
+            <h2>Verkäufer in Ihrer Nähe suchen</h2>
+
+            <label for="zipcode">Postleitzahl</label>
+            <input type="text" id="zipcode" name="zipcode" placeholder="Ihre Postleitzahl" required>
+
+            <button type="button" id="search-button">Suchen</button>
+        </div>
+
+        <ul id="seller-list" class="seller-list">
+            <!-- Ergebnisse werden hier angezeigt -->
+        </ul>
     </main>
+
     <script>
-        document.getElementById('order-form').addEventListener('submit', function(event) {
+        const sellers = [];
+
+        document.getElementById('register-form').addEventListener('submit', function(event) {
             event.preventDefault();
-            alert('Vielen Dank! Ihre Anfrage wurde erfolgreich gesendet.');
+
+            const seller = {
+                name: document.getElementById('name').value,
+                address: document.getElementById('address').value,
+                phone: document.getElementById('phone').value,
+                image: document.getElementById('image').files[0]?.name,
+                description: document.getElementById('description').value,
+                customFields: [
+                    document.getElementById('custom-field-1').value,
+                    document.getElementById('custom-field-2').value,
+                    document.getElementById('custom-field-3').value
+                ]
+            };
+
+            sellers.push(seller);
+            alert('Verkäufer erfolgreich registriert!');
+            this.reset();
+        });
+
+        document.getElementById('search-button').addEventListener('click', function() {
+            const zipcode = document.getElementById('zipcode').value;
+            const sellerList = document.getElementById('seller-list');
+            sellerList.innerHTML = '';
+
+            const filteredSellers = sellers.filter(seller => {
+                // Dies ist nur ein Platzhalter. Logik zur Überprüfung der Entfernung kann hier hinzugefügt werden.
+                return seller.address.includes(zipcode);
+            });
+
+            if (filteredSellers.length > 0) {
+                filteredSellers.forEach(seller => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <h3>${seller.name}</h3>
+                        <p>${seller.address}</p>
+                        <p>${seller.phone}</p>
+                        <p>${seller.description}</p>
+                        <p>Freitext 1: ${seller.customFields[0]}</p>
+                        <p>Freitext 2: ${seller.customFields[1]}</p>
+                        <p>Freitext 3: ${seller.customFields[2]}</p>
+                    `;
+                    sellerList.appendChild(li);
+                });
+            } else {
+                sellerList.innerHTML = '<li>Keine Verkäufer in der Nähe gefunden.</li>';
+            }
         });
     </script>
 </body>
